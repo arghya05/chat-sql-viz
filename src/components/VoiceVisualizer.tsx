@@ -85,15 +85,20 @@ export const VoiceVisualizer = ({ isRecording }: VoiceVisualizerProps) => {
 
     if (audioData.length === 0) return;
 
+    // Get computed primary color
+    const computedStyle = getComputedStyle(document.documentElement);
+    const primaryColor = computedStyle.getPropertyValue('--primary').trim();
+    const primaryHsl = `hsl(${primaryColor})`;
+
     // Draw visualization
     const barWidth = canvas.width / audioData.length;
     let x = 0;
 
-    // Create gradient
+    // Create gradient with resolved colors
     const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-    gradient.addColorStop(0, 'hsl(var(--primary))');
-    gradient.addColorStop(0.5, 'hsl(var(--primary) / 0.8)');
-    gradient.addColorStop(1, 'hsl(var(--primary) / 0.3)');
+    gradient.addColorStop(0, primaryHsl);
+    gradient.addColorStop(0.5, `hsla(${primaryColor}, 0.8)`);
+    gradient.addColorStop(1, `hsla(${primaryColor}, 0.3)`);
 
     ctx.fillStyle = gradient;
 
@@ -108,7 +113,7 @@ export const VoiceVisualizer = ({ isRecording }: VoiceVisualizerProps) => {
     }
 
     // Add glow effect
-    ctx.shadowColor = 'hsl(var(--primary))';
+    ctx.shadowColor = primaryHsl;
     ctx.shadowBlur = 10;
     ctx.globalCompositeOperation = 'source-over';
   }, [audioData]);
