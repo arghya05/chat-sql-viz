@@ -263,7 +263,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({ onPdfSelect }) => {
   return (
     <div className="h-full flex flex-col bg-transparent">
       {/* Header */}
-      <div className="p-6 border-b border-border/50">
+      <div className="p-4 border-b border-border/30">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl font-bold text-foreground bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
@@ -287,7 +287,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({ onPdfSelect }) => {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-6" onMouseUp={handleTextSelection}>
+      <div className="flex-1 overflow-y-auto p-4 space-y-4" onMouseUp={handleTextSelection}>
         {messages.map((message) => (
           <div key={message.id} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div className={`max-w-[80%] ${message.sender === 'user' ? 'order-1' : 'order-2'}`}>
@@ -346,8 +346,8 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({ onPdfSelect }) => {
 
       {/* Follow-up dialog */}
       {showFollowUp && (
-        <div className="mx-6 mb-4">
-          <div className="p-4 rounded-2xl bg-gradient-to-r from-accent/50 to-accent/30 backdrop-blur-sm border border-accent/20 shadow-[var(--shadow-card)]">
+        <div className="mx-4 mb-3">
+          <div className="p-3 rounded-xl bg-gradient-to-r from-accent/50 to-accent/30 backdrop-blur-sm border border-accent/30 shadow-md">
             <div className="flex items-center justify-between">
               <p className="text-sm font-medium">Ask a follow-up question about: "{selectedText.slice(0, 50)}..."</p>
               <div className="flex gap-2">
@@ -371,14 +371,14 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({ onPdfSelect }) => {
 
       {/* Voice Visualizer */}
       {isRecording && (
-        <div className="mx-6 mb-4">
+        <div className="mx-4 mb-3">
           <VoiceVisualizer isRecording={isRecording} audioData={audioData} />
         </div>
       )}
 
       {/* Input Area */}
-      <div className="p-6 pt-0">
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-[var(--shadow-card)] border border-white/20 p-4">
+      <div className="p-4 border-t border-border/30">
+        <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-md border border-white/40 p-3">
           <div className="flex gap-3">
             <Textarea
               value={input}

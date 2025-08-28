@@ -15,13 +15,13 @@ export const SuggestedQuestions: React.FC<SuggestedQuestionsProps> = ({
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   return (
-    <div className="p-6 bg-gradient-to-r from-white/60 to-white/40 backdrop-blur-sm border-t border-white/20">
-      <h3 className="text-sm font-semibold text-foreground mb-4">Popular Questions:</h3>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-4">
+    <div className="p-4 bg-gradient-to-r from-white/80 to-white/60 backdrop-blur-sm border-t border-white/40">
+      <h3 className="text-sm font-semibold text-foreground mb-3">Popular Questions:</h3>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
         {questions.slice(0, 4).map((question, index) => (
           <div
             key={index}
-            className="group p-3 bg-white/80 backdrop-blur-sm rounded-xl shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-card-hover)] border border-white/20 cursor-pointer transition-all duration-300 hover:scale-[1.02]"
+            className="group p-2 bg-white/90 backdrop-blur-sm rounded-lg shadow-md hover:shadow-lg border border-white/50 cursor-pointer transition-all duration-300 hover:scale-[1.01]"
             onMouseEnter={() => setHoveredIndex(index)}
             onMouseLeave={() => setHoveredIndex(null)}
             onClick={() => onQuestionSelect(question)}
@@ -43,11 +43,11 @@ export const SuggestedQuestions: React.FC<SuggestedQuestionsProps> = ({
         ))}
       </div>
       
-      <div className="flex gap-3">
+      <div className="flex gap-2">
         <input
           type="text"
           placeholder="Ask about cars, financing, or trade-ins..."
-          className="flex-1 px-4 py-3 text-sm border-0 rounded-xl bg-white/80 backdrop-blur-sm shadow-[var(--shadow-card)] placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all duration-300"
+          className="flex-1 px-3 py-2 text-sm border-0 rounded-lg bg-white/90 backdrop-blur-sm shadow-md placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all duration-300 border border-white/50"
           onKeyDown={(e) => {
             if (e.key === 'Enter' && e.currentTarget.value.trim()) {
               onQuestionSelect(e.currentTarget.value);
@@ -55,7 +55,7 @@ export const SuggestedQuestions: React.FC<SuggestedQuestionsProps> = ({
             }
           }}
         />
-        <Button variant="outline" size="sm" className="rounded-xl bg-white/80 backdrop-blur-sm shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-card-hover)] border-white/20">
+        <Button variant="outline" size="sm" className="rounded-lg bg-white/90 backdrop-blur-sm shadow-md hover:shadow-lg border-white/50">
           <ArrowRight className="w-4 h-4" />
         </Button>
       </div>

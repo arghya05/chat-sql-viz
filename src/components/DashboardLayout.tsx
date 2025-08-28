@@ -12,10 +12,10 @@ export const DashboardLayout = () => {
   const [inventoryCollapsed, setInventoryCollapsed] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-4">
-      <div className="h-[calc(100vh-2rem)] flex gap-4 max-w-7xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-2">
+      <div className="h-[calc(100vh-1rem)] flex gap-3 max-w-7xl mx-auto">
         {!sidebarCollapsed && (
-          <div className="w-64 bg-white/80 backdrop-blur-sm rounded-2xl shadow-[var(--shadow-floating)] border border-white/20">
+          <div className="w-60 bg-white/90 backdrop-blur-sm rounded-xl shadow-[var(--shadow-floating)] border border-white/40">
             <Sidebar />
           </div>
         )}
@@ -32,7 +32,7 @@ export const DashboardLayout = () => {
           </Button>
         </div>
 
-        <div className="flex-1 bg-white/80 backdrop-blur-sm rounded-2xl shadow-[var(--shadow-floating)] border border-white/20 overflow-hidden">
+        <div className="flex-1 bg-white/90 backdrop-blur-sm rounded-xl shadow-[var(--shadow-floating)] border border-white/40 overflow-hidden">
           <ResizablePanelGroup direction="horizontal" className="h-full">
             <ResizablePanel defaultSize={inventoryCollapsed ? 100 : 65} minSize={40}>
               <ChatPanel onPdfSelect={setSelectedPdf} />
@@ -40,7 +40,7 @@ export const DashboardLayout = () => {
             
             {!inventoryCollapsed && (
               <>
-                <ResizableHandle className="w-2 bg-gradient-to-b from-transparent via-border/50 to-transparent" />
+                <ResizableHandle className="w-1 bg-border/30 hover:bg-border/50 transition-colors" />
                 <ResizablePanel defaultSize={35} minSize={25}>
                   <InventoryPanel 
                     selectedPdf={selectedPdf} 
