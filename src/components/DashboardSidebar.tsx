@@ -3,20 +3,25 @@ import { Car } from 'lucide-react';
 
 export const Sidebar = () => {
   return (
-    <div className="w-48 bg-sidebar border-r border-sidebar-border flex flex-col">
-      <div className="p-4 border-b border-sidebar-border">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-            <Car className="w-5 h-5 text-primary-foreground" />
+    <div className="h-full flex flex-col">
+      <div className="p-6">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center shadow-lg">
+            <Car className="w-6 h-6 text-white" />
           </div>
-          <span className="font-semibold text-sidebar-foreground">AutoDealer Pro</span>
+          <div>
+            <h1 className="font-bold text-lg text-foreground">AutoDealer Pro</h1>
+            <p className="text-xs text-muted-foreground">AI Assistant</p>
+          </div>
         </div>
       </div>
       
-      <div className="flex-1 p-4">
-        <p className="text-sm text-sidebar-foreground/60">
-          Your AI assistant for car sales and financing
-        </p>
+      <div className="flex-1 px-6 pb-6">
+        <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl p-4 border border-primary/10">
+          <p className="text-sm text-foreground/80 leading-relaxed">
+            Your intelligent assistant for car sales, financing, and customer support
+          </p>
+        </div>
       </div>
     </div>
   );

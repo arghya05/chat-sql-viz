@@ -261,28 +261,33 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({ onPdfSelect }) => {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-background">
+    <div className="h-full flex flex-col bg-transparent">
       {/* Header */}
-      <div className="border-b border-border p-4 flex items-center justify-between">
-        <div>
-          <h2 className="text-lg font-semibold text-foreground">Car Sales & Financing Assistant</h2>
-          <p className="text-sm text-muted-foreground">
-            I can help you find the perfect car, explore financing options, and answer questions about our inventory.
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button
-            variant={isHindi ? "default" : "outline"}
-            size="sm"
-            onClick={() => setIsHindi(!isHindi)}
-          >
-            {isHindi ? "Hindi" : "English"}
-          </Button>
+      <div className="p-6 border-b border-border/50">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-bold text-foreground bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+              Car Sales & Financing Assistant
+            </h2>
+            <p className="text-sm text-muted-foreground mt-1">
+              I can help you find the perfect car, explore financing options, and answer questions about our inventory.
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant={isHindi ? "default" : "outline"}
+              size="sm"
+              onClick={() => setIsHindi(!isHindi)}
+              className="rounded-full shadow-md hover:shadow-lg transition-all duration-300"
+            >
+              {isHindi ? "Hindi" : "English"}
+            </Button>
+          </div>
         </div>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4" onMouseUp={handleTextSelection}>
+      <div className="flex-1 overflow-y-auto p-6 space-y-6" onMouseUp={handleTextSelection}>
         {messages.map((message) => (
           <div key={message.id} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div className={`max-w-[80%] ${message.sender === 'user' ? 'order-1' : 'order-2'}`}>
@@ -293,20 +298,20 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({ onPdfSelect }) => {
                   onCancel={() => toggleEdit(message.id)}
                 />
               ) : (
-                <Card className={`p-3 ${
+                <div className={`p-4 rounded-2xl shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-card-hover)] transition-all duration-300 ${
                   message.sender === 'user' 
-                    ? 'bg-primary text-primary-foreground' 
-                    : 'bg-card'
+                    ? 'bg-gradient-to-br from-primary to-primary/90 text-white' 
+                    : 'bg-white border border-border/50'
                 }`}>
-                  <div className="flex items-start justify-between gap-2">
-                    <p className="text-sm">{message.content}</p>
+                  <div className="flex items-start justify-between gap-3">
+                    <p className="text-sm leading-relaxed">{message.content}</p>
                     {message.sender === 'user' && (
-                      <div className="flex gap-1 ml-2 flex-shrink-0">
+                      <div className="flex gap-1 flex-shrink-0">
                         <Button
                           size="sm"
                           variant="ghost"
                           onClick={() => toggleEdit(message.id)}
-                          className="h-6 w-6 p-0"
+                          className="h-7 w-7 p-0 text-white/80 hover:text-white hover:bg-white/20 rounded-full"
                         >
                           <Edit className="w-3 h-3" />
                         </Button>
@@ -314,26 +319,26 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({ onPdfSelect }) => {
                           size="sm"
                           variant="ghost"
                           onClick={() => sendMessage(message.content, 'text', message.id)}
-                          className="h-6 w-6 p-0"
+                          className="h-7 w-7 p-0 text-white/80 hover:text-white hover:bg-white/20 rounded-full"
                         >
                           <RotateCcw className="w-3 h-3" />
                         </Button>
                       </div>
                     )}
                   </div>
-                </Card>
+                </div>
               )}
             </div>
           </div>
         ))}
         {isLoading && (
           <div className="flex justify-start">
-            <Card className="p-3 bg-card">
-              <div className="flex items-center gap-2">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+            <div className="p-4 rounded-2xl bg-white shadow-[var(--shadow-card)] border border-border/50">
+              <div className="flex items-center gap-3">
+                <div className="animate-spin rounded-full h-5 w-5 border-2 border-primary border-t-transparent"></div>
                 <span className="text-sm text-muted-foreground">Thinking...</span>
               </div>
-            </Card>
+            </div>
           </div>
         )}
         <div ref={messagesEndRef} />
@@ -341,20 +346,20 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({ onPdfSelect }) => {
 
       {/* Follow-up dialog */}
       {showFollowUp && (
-        <div className="mx-4 mb-2">
-          <Card className="p-3 bg-accent">
+        <div className="mx-6 mb-4">
+          <div className="p-4 rounded-2xl bg-gradient-to-r from-accent/50 to-accent/30 backdrop-blur-sm border border-accent/20 shadow-[var(--shadow-card)]">
             <div className="flex items-center justify-between">
-              <p className="text-sm">Ask a follow-up question about: "{selectedText.slice(0, 50)}..."</p>
+              <p className="text-sm font-medium">Ask a follow-up question about: "{selectedText.slice(0, 50)}..."</p>
               <div className="flex gap-2">
-                <Button size="sm" onClick={handleFollowUpQuestion}>
+                <Button size="sm" onClick={handleFollowUpQuestion} className="rounded-full shadow-md">
                   <Check className="w-4 h-4" />
                 </Button>
-                <Button size="sm" variant="outline" onClick={() => setShowFollowUp(false)}>
+                <Button size="sm" variant="outline" onClick={() => setShowFollowUp(false)} className="rounded-full">
                   <X className="w-4 h-4" />
                 </Button>
               </div>
             </div>
-          </Card>
+          </div>
         </div>
       )}
 
@@ -366,42 +371,46 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({ onPdfSelect }) => {
 
       {/* Voice Visualizer */}
       {isRecording && (
-        <div className="mx-4 mb-2">
+        <div className="mx-6 mb-4">
           <VoiceVisualizer isRecording={isRecording} audioData={audioData} />
         </div>
       )}
 
       {/* Input Area */}
-      <div className="border-t border-border p-4">
-        <div className="flex gap-2">
-          <Textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask about cars, financing, trade-ins, or our inventory..."
-            className="min-h-[60px] resize-none"
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage(input);
-              }
-            }}
-          />
-          <div className="flex flex-col gap-2">
-            <Button
-              onClick={() => sendMessage(input)}
-              disabled={!input.trim() || isLoading}
-              size="icon"
-            >
-              <Send className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="outline"
-              onClick={isRecording ? stopRecording : startRecording}
-              disabled={isLoading}
-              size="icon"
-            >
-              <Mic className={`w-4 h-4 ${isRecording ? 'text-destructive' : ''}`} />
-            </Button>
+      <div className="p-6 pt-0">
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-[var(--shadow-card)] border border-white/20 p-4">
+          <div className="flex gap-3">
+            <Textarea
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Ask about cars, financing, trade-ins, or our inventory..."
+              className="min-h-[60px] resize-none border-0 bg-transparent shadow-none focus-visible:ring-0 text-sm"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  sendMessage(input);
+                }
+              }}
+            />
+            <div className="flex flex-col gap-2">
+              <Button
+                onClick={() => sendMessage(input)}
+                disabled={!input.trim() || isLoading}
+                size="icon"
+                className="rounded-full shadow-md hover:shadow-lg transition-all duration-300"
+              >
+                <Send className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="outline"
+                onClick={isRecording ? stopRecording : startRecording}
+                disabled={isLoading}
+                size="icon"
+                className="rounded-full shadow-md hover:shadow-lg transition-all duration-300"
+              >
+                <Mic className={`w-4 h-4 ${isRecording ? 'text-destructive' : ''}`} />
+              </Button>
+            </div>
           </div>
         </div>
       </div>
