@@ -1,7 +1,7 @@
-import { ChatAgent } from '@/components/ChatAgent';
+import { DashboardLayout } from '@/components/DashboardLayout';
 
 const Index = () => {
-  return <ChatAgent />;
+  return <DashboardLayout />;
 };
 
 export default Index;

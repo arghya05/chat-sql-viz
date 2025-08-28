@@ -3,6 +3,7 @@ import { Card } from '@/components/ui/card';
 
 interface VoiceVisualizerProps {
   isRecording: boolean;
+  audioData?: number[];
 }
 
 export const VoiceVisualizer = ({ isRecording }: VoiceVisualizerProps) => {
