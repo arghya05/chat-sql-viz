@@ -79,20 +79,20 @@ export const InventoryPanel: React.FC<InventoryPanelProps> = ({ selectedPdf, onC
   }
 
   return (
-    <div className="h-full flex flex-col bg-transparent">
+    <div className="h-screen bg-background flex flex-col">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
-        <div className="p-4 border-b border-border/30">
-          <TabsList className="grid w-full grid-cols-2 bg-white/80 backdrop-blur-sm rounded-lg shadow-sm border border-white/40">
-            <TabsTrigger value="inventory" className="rounded-md font-medium">Inventory</TabsTrigger>
-            <TabsTrigger value="brochures" className="rounded-md font-medium">Brochures</TabsTrigger>
+        <div className="border-b border-border p-4">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="inventory">Inventory</TabsTrigger>
+            <TabsTrigger value="brochures">Brochures</TabsTrigger>
           </TabsList>
         </div>
 
-        <TabsContent value="inventory" className="flex-1 overflow-y-auto p-4 space-y-3">
+        <TabsContent value="inventory" className="flex-1 overflow-y-auto p-4 space-y-4">
           {vehicleCards.map((vehicle) => (
-            <div
+            <Card 
               key={vehicle.id} 
-              className="group p-3 bg-white/90 backdrop-blur-sm rounded-xl shadow-md hover:shadow-lg border border-white/50 cursor-pointer transition-all duration-300 hover:scale-[1.01]"
+              className="hover:shadow-md transition-shadow cursor-pointer group"
               onClick={() => {
                 // Simulate PDF selection for vehicle brochure
                 const pdfFilenames = [
@@ -106,29 +106,32 @@ export const InventoryPanel: React.FC<InventoryPanelProps> = ({ selectedPdf, onC
                 console.log(`Selected vehicle: ${vehicle.title}`);
               }}
             >
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl flex items-center justify-center">
-                    <vehicle.icon className="w-5 h-5 text-primary" />
-                  </div>
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                    {vehicle.title}
+                  </CardTitle>
+                  <vehicle.icon className="w-4 h-4 text-muted-foreground" />
+                </div>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="font-semibold text-sm text-foreground">{vehicle.title}</h3>
-                    <p className="text-xs text-muted-foreground">{vehicle.details}</p>
+                    <div className="text-2xl font-bold">{vehicle.value}</div>
+                    <div className="text-sm text-muted-foreground">
+                      {vehicle.details}
+                    </div>
+                  </div>
+                  <div className="w-16 h-8 bg-muted rounded flex items-center justify-center">
+                    <Fuel className="w-4 h-4 text-muted-foreground" />
                   </div>
                 </div>
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <div className="text-xl font-bold text-primary">{vehicle.value}</div>
-                <div className="w-12 h-8 bg-gradient-to-r from-green-100 to-green-50 rounded-lg flex items-center justify-center">
-                  <Fuel className="w-4 h-4 text-green-600" />
-                </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           ))}
         </TabsContent>
 
-        <TabsContent value="brochures" className="flex-1 overflow-y-auto p-4 space-y-3">
+        <TabsContent value="brochures" className="flex-1 overflow-y-auto p-4 space-y-4">
           {[
             { name: '2024 Honda Accord Brochure', type: 'PDF', size: '2.4 MB' },
             { name: 'Toyota RAV4 Specifications', type: 'PDF', size: '1.8 MB' },
@@ -137,9 +140,9 @@ export const InventoryPanel: React.FC<InventoryPanelProps> = ({ selectedPdf, onC
             { name: 'BMW 3 Series Options', type: 'PDF', size: '2.7 MB' },
             { name: 'Financing Guide 2024', type: 'PDF', size: '1.9 MB' }
           ].map((doc, index) => (
-            <div 
+            <Card 
               key={index}
-              className="group p-3 bg-white/90 backdrop-blur-sm rounded-xl shadow-md hover:shadow-lg border border-white/50 cursor-pointer transition-all duration-300 hover:scale-[1.01]"
+              className="hover:shadow-md transition-shadow cursor-pointer group"
               onClick={() => {
                 // Simulate opening PDF
                 const filename = `${doc.name.toLowerCase().replace(/\s+/g, '-')}.pdf`;
@@ -147,19 +150,21 @@ export const InventoryPanel: React.FC<InventoryPanelProps> = ({ selectedPdf, onC
                 // For demo, we'll just log this
               }}
             >
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-red-100 to-red-50 rounded-xl flex items-center justify-center group-hover:from-red-200 group-hover:to-red-100 transition-colors">
-                  <FileText className="w-6 h-6 text-red-600" />
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center group-hover:bg-red-200 transition-colors">
+                    <FileText className="w-5 h-5 text-red-600" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-medium text-sm">{doc.name}</h3>
+                    <p className="text-xs text-muted-foreground">{doc.type} • {doc.size}</p>
+                  </div>
+                  <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
+                    View
+                  </Button>
                 </div>
-                <div className="flex-1">
-                  <h3 className="font-semibold text-sm text-foreground">{doc.name}</h3>
-                  <p className="text-xs text-muted-foreground">{doc.type} • {doc.size}</p>
-                </div>
-                <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity rounded-full">
-                  View
-                </Button>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           ))}
         </TabsContent>
       </Tabs>

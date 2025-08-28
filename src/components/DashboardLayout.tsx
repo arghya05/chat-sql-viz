@@ -4,7 +4,7 @@ import { ChatPanel } from './ChatPanel';
 import { InventoryPanel } from './InventoryPanel';
 import { Sidebar } from './DashboardSidebar';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, PanelLeftClose, PanelRightClose } from 'lucide-react';
 
 export const DashboardLayout = () => {
   const [selectedPdf, setSelectedPdf] = useState<string | null>(null);
@@ -12,45 +12,37 @@ export const DashboardLayout = () => {
   const [inventoryCollapsed, setInventoryCollapsed] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-2">
-      <div className="h-[calc(100vh-1rem)] flex gap-3 max-w-7xl mx-auto">
-        {!sidebarCollapsed && (
-          <div className="w-60 bg-white/90 backdrop-blur-sm rounded-xl shadow-[var(--shadow-floating)] border border-white/40">
-            <Sidebar />
-          </div>
-        )}
-        
-        {/* Sidebar toggle */}
-        <div className="flex flex-col justify-center">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-            className="h-10 w-10 p-0 rounded-full bg-white/80 backdrop-blur-sm shadow-lg border border-white/20 hover:bg-white/90 hover:shadow-xl transition-all duration-300"
-          >
-            {sidebarCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
-          </Button>
-        </div>
+    <div className="min-h-screen bg-background flex">
+      {!sidebarCollapsed && <Sidebar />}
+      
+      {/* Sidebar toggle */}
+      <div className="flex flex-col justify-center">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+          className="h-8 w-6 p-0 border-r border-border"
+        >
+          {sidebarCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+        </Button>
+      </div>
 
-        <div className="flex-1 bg-white/90 backdrop-blur-sm rounded-xl shadow-[var(--shadow-floating)] border border-white/40 overflow-hidden">
-          <ResizablePanelGroup direction="horizontal" className="h-full">
-            <ResizablePanel defaultSize={inventoryCollapsed ? 100 : 65} minSize={40}>
-              <ChatPanel onPdfSelect={setSelectedPdf} />
+      <ResizablePanelGroup direction="horizontal" className="flex-1">
+        <ResizablePanel defaultSize={inventoryCollapsed ? 100 : 60} minSize={30}>
+          <ChatPanel onPdfSelect={setSelectedPdf} />
+        </ResizablePanel>
+        
+        {!inventoryCollapsed && (
+          <>
+            <ResizableHandle withHandle />
+            <ResizablePanel defaultSize={40} minSize={30}>
+              <InventoryPanel 
+                selectedPdf={selectedPdf} 
+                onClosePdf={() => setSelectedPdf(null)} 
+              />
             </ResizablePanel>
-            
-            {!inventoryCollapsed && (
-              <>
-                <ResizableHandle className="w-1 bg-border/30 hover:bg-border/50 transition-colors" />
-                <ResizablePanel defaultSize={35} minSize={25}>
-                  <InventoryPanel 
-                    selectedPdf={selectedPdf} 
-                    onClosePdf={() => setSelectedPdf(null)} 
-                  />
-                </ResizablePanel>
-              </>
-            )}
-          </ResizablePanelGroup>
-        </div>
+          </>
+        )}
         
         {/* Inventory panel toggle */}
         <div className="flex flex-col justify-center">
@@ -58,12 +50,12 @@ export const DashboardLayout = () => {
             variant="ghost"
             size="sm"
             onClick={() => setInventoryCollapsed(!inventoryCollapsed)}
-            className="h-10 w-10 p-0 rounded-full bg-white/80 backdrop-blur-sm shadow-lg border border-white/20 hover:bg-white/90 hover:shadow-xl transition-all duration-300"
+            className="h-8 w-6 p-0 border-l border-border"
           >
             {inventoryCollapsed ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
           </Button>
         </div>
-      </div>
+      </ResizablePanelGroup>
     </div>
   );
 };
