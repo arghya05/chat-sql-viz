@@ -92,9 +92,9 @@ export const InventoryPanel: React.FC<InventoryPanelProps> = ({ selectedPdf, onC
           {vehicleCards.map((vehicle) => (
             <Card 
               key={vehicle.id} 
-              className="hover:shadow-md transition-shadow cursor-pointer group"
+              className="hover:shadow-[var(--shadow-glow)] transition-all duration-300 cursor-pointer group bg-[var(--gradient-card)] rounded-xl"
+              style={{ boxShadow: 'var(--shadow-soft)' }}
               onClick={() => {
-                // Simulate PDF selection for vehicle brochure
                 const pdfFilenames = [
                   'honda-accord-brochure.pdf',
                   'toyota-rav4-specs.pdf', 
@@ -102,28 +102,27 @@ export const InventoryPanel: React.FC<InventoryPanelProps> = ({ selectedPdf, onC
                   'ford-f150-details.pdf'
                 ];
                 const randomPdf = pdfFilenames[Math.floor(Math.random() * pdfFilenames.length)];
-                // In real implementation, this would be the actual vehicle brochure
                 console.log(`Selected vehicle: ${vehicle.title}`);
               }}
             >
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                  <CardTitle className="text-sm font-medium text-muted-foreground group-hover:text-primary transition-colors">
                     {vehicle.title}
                   </CardTitle>
-                  <vehicle.icon className="w-4 h-4 text-muted-foreground" />
+                  <vehicle.icon className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
                 </div>
               </CardHeader>
               <CardContent className="pt-0">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-2xl font-bold">{vehicle.value}</div>
+                    <div className="text-2xl font-bold group-hover:text-primary transition-colors">{vehicle.value}</div>
                     <div className="text-sm text-muted-foreground">
                       {vehicle.details}
                     </div>
                   </div>
-                  <div className="w-16 h-8 bg-muted rounded flex items-center justify-center">
-                    <Fuel className="w-4 h-4 text-muted-foreground" />
+                  <div className="w-16 h-8 bg-gradient-to-r from-primary/10 to-primary/20 rounded-lg flex items-center justify-center group-hover:from-primary/20 group-hover:to-primary/30 transition-all">
+                    <Fuel className="w-4 h-4 text-primary" />
                   </div>
                 </div>
               </CardContent>
@@ -131,41 +130,50 @@ export const InventoryPanel: React.FC<InventoryPanelProps> = ({ selectedPdf, onC
           ))}
         </TabsContent>
 
-        <TabsContent value="brochures" className="flex-1 overflow-y-auto p-4 space-y-4">
-          {[
-            { name: '2024 Honda Accord Brochure', type: 'PDF', size: '2.4 MB' },
-            { name: 'Toyota RAV4 Specifications', type: 'PDF', size: '1.8 MB' },
-            { name: 'Tesla Model 3 Features', type: 'PDF', size: '3.1 MB' },
-            { name: 'Ford F-150 Capabilities', type: 'PDF', size: '1.2 MB' },
-            { name: 'BMW 3 Series Options', type: 'PDF', size: '2.7 MB' },
-            { name: 'Financing Guide 2024', type: 'PDF', size: '1.9 MB' }
-          ].map((doc, index) => (
-            <Card 
-              key={index}
-              className="hover:shadow-md transition-shadow cursor-pointer group"
-              onClick={() => {
-                // Simulate opening PDF
-                const filename = `${doc.name.toLowerCase().replace(/\s+/g, '-')}.pdf`;
-                console.log('Opening PDF:', filename);
-                // For demo, we'll just log this
-              }}
-            >
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center group-hover:bg-red-200 transition-colors">
-                    <FileText className="w-5 h-5 text-red-600" />
+        <TabsContent value="brochures" className="flex-1 overflow-y-auto p-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[
+              { name: '2024 Honda Accord', type: 'Brochure', size: '2.4 MB', image: '/placeholder.svg', color: 'bg-blue-500' },
+              { name: 'Toyota RAV4', type: 'Specifications', size: '1.8 MB', image: '/placeholder.svg', color: 'bg-red-500' },
+              { name: 'Tesla Model 3', type: 'Features Guide', size: '3.1 MB', image: '/placeholder.svg', color: 'bg-gray-800' },
+              { name: 'Ford F-150', type: 'Capabilities', size: '1.2 MB', image: '/placeholder.svg', color: 'bg-blue-600' },
+              { name: 'BMW 3 Series', type: 'Options Guide', size: '2.7 MB', image: '/placeholder.svg', color: 'bg-black' },
+              { name: 'Financing Guide', type: '2024 Rates', size: '1.9 MB', image: '/placeholder.svg', color: 'bg-green-600' }
+            ].map((doc, index) => (
+              <Card 
+                key={index}
+                className="hover:shadow-[var(--shadow-glow)] transition-all duration-300 cursor-pointer group bg-[var(--gradient-card)] rounded-xl overflow-hidden"
+                style={{ boxShadow: 'var(--shadow-soft)' }}
+                onClick={() => {
+                  const filename = `${doc.name.toLowerCase().replace(/\s+/g, '-')}.pdf`;
+                  console.log('Opening PDF:', filename);
+                }}
+              >
+                <div className="relative">
+                  <div className={`h-32 ${doc.color} flex items-center justify-center`}>
+                    <img 
+                      src={doc.image} 
+                      alt={doc.name}
+                      className="w-16 h-16 object-contain opacity-80 group-hover:opacity-100 transition-opacity"
+                    />
                   </div>
-                  <div className="flex-1">
-                    <h3 className="font-medium text-sm">{doc.name}</h3>
-                    <p className="text-xs text-muted-foreground">{doc.type} • {doc.size}</p>
+                  <div className="absolute top-2 right-2 bg-black/20 backdrop-blur-sm rounded-full p-1">
+                    <FileText className="w-4 h-4 text-white" />
                   </div>
-                  <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
-                    View
-                  </Button>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
+                <CardContent className="p-4">
+                  <h3 className="font-semibold text-sm mb-1 group-hover:text-primary transition-colors">{doc.name}</h3>
+                  <p className="text-xs text-muted-foreground mb-2">{doc.type}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-muted-foreground">{doc.size}</span>
+                    <Button variant="ghost" size="sm" className="h-6 px-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="text-xs">View</span>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </TabsContent>
       </Tabs>
     </div>
