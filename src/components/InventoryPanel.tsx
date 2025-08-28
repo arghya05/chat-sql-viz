@@ -2,91 +2,73 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { X, TrendingUp, TrendingDown, BarChart3, FileText } from 'lucide-react';
+import { X, Car, Fuel, DollarSign, FileText } from 'lucide-react';
 import { PDFViewer } from './PDFViewer';
 
-interface MetricsPanelProps {
+interface InventoryPanelProps {
   selectedPdf: string | null;
   onClosePdf: () => void;
 }
 
-const metricCards = [
+const vehicleCards = [
   {
-    id: 'transactions',
-    title: 'Transactions',
-    value: '988',
-    change: '+12%',
-    trend: 'up',
-    icon: TrendingUp,
+    id: 'sedan-special',
+    title: '2024 Honda Accord',
+    value: '$28,995',
+    details: 'LX Trim • CVT',
+    type: 'sedan',
+    icon: Car,
     image: '/placeholder.svg'
   },
   {
-    id: 'pageviews', 
-    title: 'Pageviews',
-    value: '252k',
-    change: '+8%',
-    trend: 'up',
-    icon: BarChart3,
+    id: 'suv-deal', 
+    title: '2023 Toyota RAV4',
+    value: '$32,450',
+    details: 'LE AWD • 1.2k miles',
+    type: 'suv',
+    icon: Car,
     image: '/placeholder.svg'
   },
   {
-    id: 'time-on-site',
-    title: 'Time on Site',
-    value: '3.75m',
-    change: '-2%',
-    trend: 'down',
-    icon: TrendingDown,
+    id: 'electric-special',
+    title: '2024 Tesla Model 3',
+    value: '$35,990',
+    details: 'Standard Range • 0 miles',
+    type: 'electric',
+    icon: Car,
     image: '/placeholder.svg'
   },
   {
-    id: 'bounces',
-    title: 'Bounces', 
-    value: '34.2k',
-    change: '+5%',
-    trend: 'down',
-    icon: TrendingDown,
+    id: 'truck-deal',
+    title: '2023 Ford F-150', 
+    value: '$42,995',
+    details: 'XLT SuperCrew • 5k miles',
+    type: 'truck',
+    icon: Car,
     image: '/placeholder.svg'
   },
   {
-    id: 'revenue',
-    title: 'Revenue',
-    value: '$111m',
-    change: '+15%',
-    trend: 'up',
-    icon: TrendingUp,
+    id: 'luxury-sedan',
+    title: '2023 BMW 3 Series',
+    value: '$45,500',
+    details: '330i xDrive • 8k miles',
+    type: 'luxury',
+    icon: Car,
     image: '/placeholder.svg'
   },
   {
-    id: 'avg-transaction',
-    title: 'Average Transaction Value',
-    value: '1.64k',
-    change: '+3%',
-    trend: 'up',
-    icon: TrendingUp,
-    image: '/placeholder.svg'
-  },
-  {
-    id: 'total-hits',
-    title: 'Total Hits',
-    value: '302k',
-    change: '+7%',
-    trend: 'up',
-    icon: BarChart3,
-    image: '/placeholder.svg'
-  },
-  {
-    id: 'total-visits',
-    title: 'Total Visits',
-    value: '67.4k',
-    change: '+4%',
-    trend: 'up',
-    icon: TrendingUp,
+    id: 'compact-deal',
+    title: '2024 Nissan Sentra',
+    value: '$21,990',
+    details: 'SV CVT • New',
+    type: 'compact',
+    icon: Car,
     image: '/placeholder.svg'
   }
 ];
 
-export const MetricsPanel: React.FC<MetricsPanelProps> = ({ selectedPdf, onClosePdf }) => {
-  const [activeTab, setActiveTab] = useState('metrics');
+export const InventoryPanel: React.FC<InventoryPanelProps> = ({ selectedPdf, onClosePdf }) => {
+  const [activeTab, setActiveTab] = useState('inventory');
 
   if (selectedPdf) {
     return (
@@ -101,51 +83,47 @@ export const MetricsPanel: React.FC<MetricsPanelProps> = ({ selectedPdf, onClose
       <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
         <div className="border-b border-border p-4">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="metrics">Metrics</TabsTrigger>
+            <TabsTrigger value="inventory">Inventory</TabsTrigger>
             <TabsTrigger value="brochures">Brochures</TabsTrigger>
           </TabsList>
         </div>
 
-        <TabsContent value="metrics" className="flex-1 overflow-y-auto p-4 space-y-4">
-          {metricCards.map((metric) => (
+        <TabsContent value="inventory" className="flex-1 overflow-y-auto p-4 space-y-4">
+          {vehicleCards.map((vehicle) => (
             <Card 
-              key={metric.id} 
-              className="hover:shadow-md transition-shadow cursor-pointer"
+              key={vehicle.id} 
+              className="hover:shadow-md transition-shadow cursor-pointer group"
               onClick={() => {
-                // Simulate PDF selection for demo
+                // Simulate PDF selection for vehicle brochure
                 const pdfFilenames = [
-                  'quarterly-report.pdf',
-                  'marketing-analysis.pdf', 
-                  'revenue-breakdown.pdf',
-                  'traffic-insights.pdf'
+                  'honda-accord-brochure.pdf',
+                  'toyota-rav4-specs.pdf', 
+                  'tesla-model3-info.pdf',
+                  'ford-f150-details.pdf'
                 ];
                 const randomPdf = pdfFilenames[Math.floor(Math.random() * pdfFilenames.length)];
-                // In real implementation, this would be based on the metric
-                console.log(`Selected metric: ${metric.title}`);
+                // In real implementation, this would be the actual vehicle brochure
+                console.log(`Selected vehicle: ${vehicle.title}`);
               }}
             >
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-sm font-medium text-muted-foreground">
-                    {metric.title}
+                    {vehicle.title}
                   </CardTitle>
-                  <metric.icon className="w-4 h-4 text-muted-foreground" />
+                  <vehicle.icon className="w-4 h-4 text-muted-foreground" />
                 </div>
               </CardHeader>
               <CardContent className="pt-0">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-2xl font-bold">{metric.value}</div>
-                    <div className={`text-sm ${
-                      metric.trend === 'up' ? 'text-green-600' : 'text-red-600'
-                    }`}>
-                      {metric.change}
+                    <div className="text-2xl font-bold">{vehicle.value}</div>
+                    <div className="text-sm text-muted-foreground">
+                      {vehicle.details}
                     </div>
                   </div>
                   <div className="w-16 h-8 bg-muted rounded flex items-center justify-center">
-                    <div className={`w-8 h-1 rounded ${
-                      metric.trend === 'up' ? 'bg-green-500' : 'bg-red-500'
-                    }`} />
+                    <Fuel className="w-4 h-4 text-muted-foreground" />
                   </div>
                 </div>
               </CardContent>
@@ -155,12 +133,12 @@ export const MetricsPanel: React.FC<MetricsPanelProps> = ({ selectedPdf, onClose
 
         <TabsContent value="brochures" className="flex-1 overflow-y-auto p-4 space-y-4">
           {[
-            { name: 'Q4 Analytics Report', type: 'PDF', size: '2.4 MB' },
-            { name: 'Marketing Insights', type: 'PDF', size: '1.8 MB' },
-            { name: 'Revenue Analysis', type: 'PDF', size: '3.1 MB' },
-            { name: 'Traffic Breakdown', type: 'PDF', size: '1.2 MB' },
-            { name: 'Customer Segments', type: 'PDF', size: '2.7 MB' },
-            { name: 'Performance Review', type: 'PDF', size: '1.9 MB' }
+            { name: '2024 Honda Accord Brochure', type: 'PDF', size: '2.4 MB' },
+            { name: 'Toyota RAV4 Specifications', type: 'PDF', size: '1.8 MB' },
+            { name: 'Tesla Model 3 Features', type: 'PDF', size: '3.1 MB' },
+            { name: 'Ford F-150 Capabilities', type: 'PDF', size: '1.2 MB' },
+            { name: 'BMW 3 Series Options', type: 'PDF', size: '2.7 MB' },
+            { name: 'Financing Guide 2024', type: 'PDF', size: '1.9 MB' }
           ].map((doc, index) => (
             <Card 
               key={index}

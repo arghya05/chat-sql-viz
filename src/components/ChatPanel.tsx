@@ -37,10 +37,12 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({ onPdfSelect }) => {
   const { toast } = useToast();
 
   const suggestedQuestions = [
-    "What are the Total Hits for each Actual domain (Source) from 2016-08-01 to 2017-07-31?",
-    "How does Revenue vary by Actual domain (Source) for the same period?", 
-    "Which Actual domain (Source) had the highest number of Transactions from 2016-08-01 to 2017-07-31?",
-    "Show anomalies for bounces in July 2017"
+    "What cars do you have available under $25,000?",
+    "Can you help me compare financing options for a new SUV?", 
+    "What's the trade-in value of my 2018 Honda Civic?",
+    "Do you have any certified pre-owned BMW vehicles?",
+    "What are the current lease deals on electric vehicles?",
+    "Can you show me cars with the best fuel economy?"
   ];
 
   const scrollToBottom = () => {
@@ -263,9 +265,9 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({ onPdfSelect }) => {
       {/* Header */}
       <div className="border-b border-border p-4 flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-foreground">Marketing Analysis</h2>
+          <h2 className="text-lg font-semibold text-foreground">Car Sales & Financing Assistant</h2>
           <p className="text-sm text-muted-foreground">
-            Consider segmenting traffic by device, region, or campaign to uncover additional actionable insights.
+            I can help you find the perfect car, explore financing options, and answer questions about our inventory.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -342,7 +344,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({ onPdfSelect }) => {
         <div className="mx-4 mb-2">
           <Card className="p-3 bg-accent">
             <div className="flex items-center justify-between">
-              <p className="text-sm">Process a follow-up question about: "{selectedText.slice(0, 50)}..."</p>
+              <p className="text-sm">Ask a follow-up question about: "{selectedText.slice(0, 50)}..."</p>
               <div className="flex gap-2">
                 <Button size="sm" onClick={handleFollowUpQuestion}>
                   <Check className="w-4 h-4" />
@@ -375,7 +377,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({ onPdfSelect }) => {
           <Textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask a new question"
+            placeholder="Ask about cars, financing, trade-ins, or our inventory..."
             className="min-h-[60px] resize-none"
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
