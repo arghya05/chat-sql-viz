@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
-import { Mic, Send, RotateCcw, Edit, Check, X, TrendingUp } from 'lucide-react';
+import { Mic, Send, RotateCcw, Edit, Check, X, TrendingUp, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { VoiceVisualizer } from './VoiceVisualizer';
 import { SuggestedQuestions } from './SuggestedQuestions';
 import { EditableMessage } from './EditableMessage';
@@ -301,6 +301,41 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({ onPdfSelect }) => {
     );
   };
 
+  const sendFeedback = async (type: 'good' | 'bad') => {
+    if (!conversationId) return;
+
+    try {
+      const conversationData = {
+        data: messages,
+        type
+      };
+
+      const response = await fetch(`http://localhost:9090/${conversationId}/favourable_conversations`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(conversationData),
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Feedback Sent",
+          description: `Thank you for your ${type === 'good' ? 'positive' : 'negative'} feedback!`,
+        });
+      } else {
+        throw new Error('Failed to send feedback');
+      }
+    } catch (error) {
+      console.error('Error sending feedback:', error);
+      toast({
+        title: "Error",
+        description: "Failed to send feedback. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="h-screen flex flex-col bg-background">
       {/* Header */}
@@ -376,6 +411,30 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({ onPdfSelect }) => {
                       </div>
                     )}
                   </div>
+                  
+                  {/* Feedback buttons for assistant messages */}
+                  {message.sender === 'assistant' && (
+                    <div className="flex gap-2 mt-3 pt-2 border-t border-border">
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => sendFeedback('good')}
+                        className="h-8 px-3 text-xs"
+                      >
+                        <ThumbsUp className="w-3 h-3 mr-1" />
+                        Like
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => sendFeedback('bad')}
+                        className="h-8 px-3 text-xs"
+                      >
+                        <ThumbsDown className="w-3 h-3 mr-1" />
+                        Dislike
+                      </Button>
+                    </div>
+                  )}
                 </Card>
               )}
               
