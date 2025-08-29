@@ -95,7 +95,7 @@ export const InventoryPanel: React.FC<InventoryPanelProps> = ({ selectedPdf, onC
   return (
     <div className="h-screen bg-background flex flex-col">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
-        <div className="border-b border-border p-4">
+        <div className="border-b border-border p-4 pt-6">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="inventory">Inventory</TabsTrigger>
             <TabsTrigger value="brochures">Brochures</TabsTrigger>

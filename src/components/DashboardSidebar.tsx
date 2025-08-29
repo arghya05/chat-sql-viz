@@ -1,15 +1,16 @@
 import React from 'react';
-import { Car } from 'lucide-react';
+import tataLogo from '@/assets/tata-motors-logo.png';
 
 export const Sidebar = () => {
   return (
     <div className="w-48 bg-sidebar border-r border-sidebar-border flex flex-col">
-      <div className="p-4 border-b border-sidebar-border">
+      <div className="p-4 border-b border-sidebar-border bg-black">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-            <Car className="w-5 h-5 text-primary-foreground" />
-          </div>
-          <span className="font-semibold text-sidebar-foreground">AutoDealer Pro</span>
+          <img 
+            src={tataLogo} 
+            alt="TATA MOTORS" 
+            className="h-8 w-auto object-contain" 
+          />
         </div>
       </div>
       
