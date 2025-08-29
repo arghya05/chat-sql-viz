@@ -115,8 +115,8 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({ onPdfSelect }) => {
     } catch (error) {
       console.error('Error sending message:', error);
       toast({
-        title: "Error",
-        description: "Failed to send message. Please try again.",
+        title: "Connection Error",
+        description: "Cannot connect to the chat server. Please check if the backend service is running on localhost:9090",
         variant: "destructive",
       });
     } finally {
@@ -220,8 +220,8 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({ onPdfSelect }) => {
     } catch (error) {
       console.error('Error sending voice message:', error);
       toast({
-        title: "Error",
-        description: "Failed to send voice message",
+        title: "Connection Error",
+        description: "Cannot connect to the chat server. Please check if the backend service is running on localhost:9090",
         variant: "destructive",
       });
     }
