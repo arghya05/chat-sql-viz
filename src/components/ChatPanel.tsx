@@ -36,6 +36,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({ onPdfSelect }) => {
   const [selectedText, setSelectedText] = useState<string>('');
   const [showFollowUp, setShowFollowUp] = useState(false);
   const [isHindi, setIsHindi] = useState(false);
+  const [followupQuestions, setFollowupQuestions] = useState<{[messageId: string]: string[]}>({});
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
@@ -127,9 +128,10 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({ onPdfSelect }) => {
       setMessages(prev => [...prev, assistantMessage]);
       setConversationId(data.conversation_id);
 
-      // Check for customer insights
+      // Check for customer insights and fetch followup questions
       if (data.conversation_id) {
         checkCustomerInsights(data.conversation_id);
+        fetchFollowupQuestions(data.conversation_id, assistantMessage.id);
       }
 
     } catch (error) {
@@ -156,6 +158,23 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({ onPdfSelect }) => {
       }
     } catch (error) {
       console.error('Error checking insights:', error);
+    }
+  };
+
+  const fetchFollowupQuestions = async (convId: string, messageId: string) => {
+    try {
+      const response = await fetch(`http://localhost:9090/conversations/${convId}/followup_questions`);
+      if (response.ok) {
+        const questions = await response.json();
+        if (questions && Array.isArray(questions) && questions.length > 0) {
+          setFollowupQuestions(prev => ({
+            ...prev,
+            [messageId]: questions
+          }));
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching followup questions:', error);
     }
   };
 
@@ -236,6 +255,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({ onPdfSelect }) => {
 
       if (data.conversation_id) {
         checkCustomerInsights(data.conversation_id);
+        fetchFollowupQuestions(data.conversation_id, assistantMessage.id);
       }
 
     } catch (error) {
@@ -357,6 +377,16 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({ onPdfSelect }) => {
                     )}
                   </div>
                 </Card>
+              )}
+              
+              {/* Followup Questions for Assistant Messages */}
+              {message.sender === 'assistant' && followupQuestions[message.id] && (
+                <div className="mt-3">
+                  <SuggestedQuestions
+                    questions={followupQuestions[message.id]}
+                    onQuestionSelect={sendMessage}
+                  />
+                </div>
               )}
             </div>
           </div>
