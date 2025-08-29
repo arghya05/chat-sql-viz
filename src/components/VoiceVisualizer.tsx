@@ -57,14 +57,21 @@ export const VoiceVisualizer = ({ isRecording }: VoiceVisualizerProps) => {
   const stopVisualization = () => {
     if (animationRef.current) {
       cancelAnimationFrame(animationRef.current);
+      animationRef.current = undefined;
     }
     
     if (microphoneRef.current) {
       microphoneRef.current.disconnect();
+      microphoneRef.current = null;
     }
     
-    if (audioContextRef.current) {
+    if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
       audioContextRef.current.close();
+      audioContextRef.current = null;
+    }
+    
+    if (analyserRef.current) {
+      analyserRef.current = null;
     }
     
     setAudioData(new Uint8Array(0));
