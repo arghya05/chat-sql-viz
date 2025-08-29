@@ -37,12 +37,13 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({ onPdfSelect }) => {
   const { toast } = useToast();
 
   const suggestedQuestions = [
-    "What cars do you have available under $25,000?",
-    "Can you help me compare financing options for a new SUV?", 
-    "What's the trade-in value of my 2018 Honda Civic?",
-    "Do you have any certified pre-owned BMW vehicles?",
-    "What are the current lease deals on electric vehicles?",
-    "Can you show me cars with the best fuel economy?"
+    "Nexon price and features",
+    "Harrier vs Safari comparison", 
+    "Best electric vehicle",
+    "CNG cars available",
+    "Family SUV under 15 lakhs",
+    "Test drive booking",
+    "Financing options"
   ];
 
   const scrollToBottom = () => {
