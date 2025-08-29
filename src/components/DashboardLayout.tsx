@@ -39,6 +39,7 @@ export const DashboardLayout = () => {
               <InventoryPanel 
                 selectedPdf={selectedPdf} 
                 onClosePdf={() => setSelectedPdf(null)} 
+                onPdfSelect={setSelectedPdf}
               />
             </ResizablePanel>
           </>
