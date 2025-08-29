@@ -93,10 +93,13 @@ export const VoiceVisualizer = ({ isRecording }: VoiceVisualizerProps) => {
 
     if (audioData.length === 0) return;
 
-    // Get computed primary color
+    // Get computed primary color and convert to canvas-compatible format
     const computedStyle = getComputedStyle(document.documentElement);
     const primaryColor = computedStyle.getPropertyValue('--primary').trim();
-    const primaryHsl = `hsl(${primaryColor})`;
+    // Convert space-separated HSL to comma-separated for canvas compatibility
+    const primaryHsl = `hsl(${primaryColor.replace(/\s+/g, ', ')})`;
+    const primaryHsla08 = `hsla(${primaryColor.replace(/\s+/g, ', ')}, 0.8)`;
+    const primaryHsla03 = `hsla(${primaryColor.replace(/\s+/g, ', ')}, 0.3)`;
 
     // Draw visualization
     const barWidth = canvas.width / audioData.length;
@@ -105,8 +108,8 @@ export const VoiceVisualizer = ({ isRecording }: VoiceVisualizerProps) => {
     // Create gradient with resolved colors
     const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
     gradient.addColorStop(0, primaryHsl);
-    gradient.addColorStop(0.5, `hsla(${primaryColor}, 0.8)`);
-    gradient.addColorStop(1, `hsla(${primaryColor}, 0.3)`);
+    gradient.addColorStop(0.5, primaryHsla08);
+    gradient.addColorStop(1, primaryHsla03);
 
     ctx.fillStyle = gradient;
 
