@@ -24,7 +24,7 @@ export const SuggestedQuestions: React.FC<SuggestedQuestionsProps> = ({
             variant="ghost"
             className="w-full p-4 flex items-center justify-between hover:bg-accent/20 rounded-t-lg"
           >
-            <h3 className="text-sm font-medium text-foreground">Popular Questions</h3>
+            <h3 className="text-sm font-medium text-foreground">Suggested Questions</h3>
             <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
           </Button>
         </CollapsibleTrigger>
