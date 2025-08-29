@@ -16,6 +16,9 @@ interface Message {
   timestamp: Date;
   type: 'text' | 'voice';
   isEditing?: boolean;
+  metadata?: {
+    agent_type?: string;
+  };
 }
 
 interface ChatPanelProps {
@@ -36,6 +39,20 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({ onPdfSelect }) => {
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+
+  // Agent personas mapping
+  const agentPersonas = {
+    'sales': { name: 'Sales Expert', color: 'bg-blue-500' },
+    'finance': { name: 'Finance Advisor', color: 'bg-green-500' },
+    'technical': { name: 'Technical Specialist', color: 'bg-purple-500' },
+    'customer_service': { name: 'Customer Service', color: 'bg-orange-500' },
+    'inventory': { name: 'Inventory Manager', color: 'bg-teal-500' },
+    'default': { name: 'Assistant', color: 'bg-gray-500' }
+  };
+
+  const getAgentPersona = (agentType?: string) => {
+    return agentPersonas[agentType as keyof typeof agentPersonas] || agentPersonas.default;
+  };
 
   const suggestedQuestions = [
     "Nexon price and features",
@@ -103,7 +120,8 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({ onPdfSelect }) => {
         content: data.message,
         sender: 'assistant',
         timestamp: new Date(),
-        type: 'text'
+        type: 'text',
+        metadata: data.meta_data
       };
 
       setMessages(prev => [...prev, assistantMessage]);
@@ -209,7 +227,8 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({ onPdfSelect }) => {
         content: data.message,
         sender: 'assistant',
         timestamp: new Date(),
-        type: 'text'
+        type: 'text',
+        metadata: data.meta_data
       };
 
       setMessages(prev => [...prev, userMessage, assistantMessage]);
@@ -300,6 +319,14 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({ onPdfSelect }) => {
                     ? 'bg-primary text-primary-foreground' 
                     : 'bg-card'
                 }`}>
+                  {message.sender === 'assistant' && message.metadata?.agent_type && (
+                    <div className="flex items-center gap-2 mb-2 pb-2 border-b border-border">
+                      <div className={`w-2 h-2 rounded-full ${getAgentPersona(message.metadata.agent_type).color}`}></div>
+                      <span className="text-xs font-medium text-muted-foreground">
+                        {getAgentPersona(message.metadata.agent_type).name}
+                      </span>
+                    </div>
+                  )}
                   <div className="flex items-start justify-between gap-2">
                     {message.sender === 'assistant' ? (
                       <div className="text-sm prose prose-sm max-w-none dark:prose-invert">
