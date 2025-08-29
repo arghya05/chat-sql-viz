@@ -7,6 +7,7 @@ import { VoiceVisualizer } from './VoiceVisualizer';
 import { SuggestedQuestions } from './SuggestedQuestions';
 import { EditableMessage } from './EditableMessage';
 import { useToast } from '@/hooks/use-toast';
+import ReactMarkdown from 'react-markdown';
 
 interface Message {
   id: string;
@@ -300,7 +301,13 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({ onPdfSelect }) => {
                     : 'bg-card'
                 }`}>
                   <div className="flex items-start justify-between gap-2">
-                    <p className="text-sm">{message.content}</p>
+                    {message.sender === 'assistant' ? (
+                      <div className="text-sm prose prose-sm max-w-none dark:prose-invert">
+                        <ReactMarkdown>{message.content}</ReactMarkdown>
+                      </div>
+                    ) : (
+                      <p className="text-sm">{message.content}</p>
+                    )}
                     {message.sender === 'user' && (
                       <div className="flex gap-1 ml-2 flex-shrink-0">
                         <Button
