@@ -72,8 +72,8 @@ export const PDFViewer = ({ filename, onClose }: PDFViewerProps) => {
   }, [pdfUrl]);
 
   return (
-    <div className="w-1/3 border-l bg-background flex flex-col">
-      <Card className="rounded-none border-x-0 border-t-0 h-full flex flex-col">
+    <div className="w-full h-full bg-background flex flex-col">
+      <Card className="rounded-none border-0 h-full flex flex-col shadow-none bg-transparent">
         <CardHeader className="pb-3 border-b">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -105,7 +105,7 @@ export const PDFViewer = ({ filename, onClose }: PDFViewerProps) => {
           </div>
         </CardHeader>
 
-        <CardContent className="flex-1 p-0">
+        <CardContent className="flex-1 p-0 min-h-0">
           {isLoading && (
             <div className="flex items-center justify-center h-full">
               <div className="text-center">
@@ -128,11 +128,14 @@ export const PDFViewer = ({ filename, onClose }: PDFViewerProps) => {
           )}
 
           {pdfUrl && !isLoading && !error && (
-            <iframe
-              src={pdfUrl}
-              className="w-full h-full border-0"
-              title={`PDF Viewer - ${filename}`}
-            />
+            <div className="w-full h-full">
+              <iframe
+                src={`${pdfUrl}#toolbar=1&navpanes=1&scrollbar=1`}
+                className="w-full h-full border-0"
+                title={`PDF Viewer - ${filename}`}
+                style={{ minHeight: '500px' }}
+              />
+            </div>
           )}
         </CardContent>
       </Card>
