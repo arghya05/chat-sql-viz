@@ -35,6 +35,22 @@ interface ConversationData {
   market_category?: string;
 }
 
+interface Appointment {
+  id: number;
+  booking_type: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone?: string;
+  preferred_date?: string;
+  preferred_time?: string;
+  vehicle_interest?: string;
+  message?: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+}
+
 interface AdminData {
   folder1: Record<string, ConversationData>;
   folder2: Record<string, ConversationData>;
@@ -42,7 +58,9 @@ interface AdminData {
 
 const Admin = () => {
   const [adminData, setAdminData] = useState<AdminData | null>(null);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(false);
+  const [appointmentsLoading, setAppointmentsLoading] = useState(false);
   const [selectedConversation, setSelectedConversation] = useState<ConversationData | null>(null);
   const { toast } = useToast();
 
@@ -70,8 +88,33 @@ const Admin = () => {
     }
   };
 
+  const fetchAppointments = async () => {
+    setAppointmentsLoading(true);
+    try {
+      const response = await fetch('http://localhost:9090/appointments');
+      if (!response.ok) throw new Error('Failed to fetch appointments');
+      
+      const data = await response.json();
+      setAppointments(data.appointments || []);
+      toast({
+        title: "Appointments Loaded",
+        description: "Appointment data fetched successfully.",
+      });
+    } catch (error) {
+      console.error('Error fetching appointments:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch appointments.",
+        variant: "destructive",
+      });
+    } finally {
+      setAppointmentsLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchAdminData();
+    fetchAppointments();
   }, []);
 
   const getInsights = () => {
@@ -127,9 +170,14 @@ const Admin = () => {
           />
           <h1 className="text-xl font-semibold text-white">Admin Dashboard</h1>
         </div>
-        <Button onClick={fetchAdminData} disabled={loading}>
-          {loading ? 'Loading...' : 'Refresh Data'}
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={fetchAdminData} disabled={loading}>
+            {loading ? 'Loading...' : 'Refresh Data'}
+          </Button>
+          <Button onClick={fetchAppointments} disabled={appointmentsLoading}>
+            {appointmentsLoading ? 'Loading...' : 'Refresh Appointments'}
+          </Button>
+        </div>
       </div>
 
       <div className="p-6">
@@ -181,6 +229,7 @@ const Admin = () => {
           <TabsList>
             <TabsTrigger value="feedback">Feedback Data</TabsTrigger>
             <TabsTrigger value="insights">Customer Insights</TabsTrigger>
+            <TabsTrigger value="appointments">Appointments</TabsTrigger>
           </TabsList>
           
           <TabsContent value="feedback" className="space-y-6">
@@ -358,6 +407,96 @@ const Admin = () => {
                         </div>
                       </div>
                     </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="appointments" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Appointments & Test Drives</CardTitle>
+                <CardDescription>
+                  View all customer appointments and test drive bookings
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {appointmentsLoading ? (
+                  <div className="text-center py-8">
+                    <p className="text-muted-foreground">Loading appointments...</p>
+                  </div>
+                ) : appointments.length > 0 ? (
+                  <div className="rounded-md border">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Type</TableHead>
+                          <TableHead>Customer</TableHead>
+                          <TableHead>Contact</TableHead>
+                          <TableHead>Preferred Date/Time</TableHead>
+                          <TableHead>Vehicle Interest</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Created</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {appointments.map((appointment) => (
+                          <TableRow key={appointment.id}>
+                            <TableCell>
+                              <Badge variant={appointment.booking_type === 'testdrive' ? 'default' : 'secondary'}>
+                                {appointment.booking_type}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              <div>
+                                <p className="font-medium">
+                                  {appointment.first_name} {appointment.last_name}
+                                </p>
+                                <p className="text-sm text-muted-foreground">
+                                  {appointment.email}
+                                </p>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              {appointment.phone || 'N/A'}
+                            </TableCell>
+                            <TableCell>
+                              <div>
+                                {appointment.preferred_date && (
+                                  <p className="text-sm">{appointment.preferred_date}</p>
+                                )}
+                                {appointment.preferred_time && (
+                                  <p className="text-sm text-muted-foreground">{appointment.preferred_time}</p>
+                                )}
+                                {!appointment.preferred_date && !appointment.preferred_time && 'N/A'}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              {appointment.vehicle_interest || 'N/A'}
+                            </TableCell>
+                            <TableCell>
+                              <Badge 
+                                variant={
+                                  appointment.status === 'confirmed' ? 'default' :
+                                  appointment.status === 'pending' ? 'secondary' :
+                                  appointment.status === 'cancelled' ? 'destructive' : 'outline'
+                                }
+                              >
+                                {appointment.status}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              {new Date(appointment.created_at).toLocaleDateString()}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <p className="text-muted-foreground">No appointments found.</p>
                   </div>
                 )}
               </CardContent>
