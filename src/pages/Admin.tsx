@@ -4,7 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { TrendingUp, TrendingDown, Users, MessageSquare, ThumbsUp, ThumbsDown, BarChart3, Eye } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { TrendingUp, TrendingDown, Users, MessageSquare, ThumbsUp, ThumbsDown, BarChart3, Eye, Plus, Tag } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import tataLogo from '@/assets/tata-motors-logo.png';
 
@@ -51,6 +54,19 @@ interface Appointment {
   updated_at: string;
 }
 
+interface Offer {
+  id: number;
+  title: string;
+  description: string;
+  discount_percentage?: number;
+  discount_amount?: number;
+  vehicle_model?: string;
+  valid_from?: string;
+  valid_until?: string;
+  terms_conditions?: string;
+  created_at: string;
+}
+
 interface AdminData {
   folder1: Record<string, ConversationData>;
   folder2: Record<string, ConversationData>;
@@ -59,9 +75,22 @@ interface AdminData {
 const Admin = () => {
   const [adminData, setAdminData] = useState<AdminData | null>(null);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [offers, setOffers] = useState<Offer[]>([]);
   const [loading, setLoading] = useState(false);
   const [appointmentsLoading, setAppointmentsLoading] = useState(false);
+  const [offersLoading, setOffersLoading] = useState(false);
   const [selectedConversation, setSelectedConversation] = useState<ConversationData | null>(null);
+  const [showOfferForm, setShowOfferForm] = useState(false);
+  const [offerForm, setOfferForm] = useState({
+    title: '',
+    description: '',
+    discount_percentage: '',
+    discount_amount: '',
+    vehicle_model: '',
+    valid_from: '',
+    valid_until: '',
+    terms_conditions: ''
+  });
   const { toast } = useToast();
 
   const fetchAdminData = async () => {
@@ -112,9 +141,79 @@ const Admin = () => {
     }
   };
 
+  const fetchOffers = async () => {
+    setOffersLoading(true);
+    try {
+      const response = await fetch('http://localhost:9090/offers');
+      if (!response.ok) throw new Error('Failed to fetch offers');
+      
+      const data = await response.json();
+      setOffers(data.offers || []);
+      toast({
+        title: "Offers Loaded",
+        description: "Offers data fetched successfully.",
+      });
+    } catch (error) {
+      console.error('Error fetching offers:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch offers.",
+        variant: "destructive",
+      });
+    } finally {
+      setOffersLoading(false);
+    }
+  };
+
+  const createOffer = async () => {
+    try {
+      const offerData = {
+        ...offerForm,
+        discount_percentage: offerForm.discount_percentage ? parseFloat(offerForm.discount_percentage) : null,
+        discount_amount: offerForm.discount_amount ? parseFloat(offerForm.discount_amount) : null,
+      };
+
+      const response = await fetch('http://localhost:9090/offers', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(offerData),
+      });
+
+      if (!response.ok) throw new Error('Failed to create offer');
+
+      toast({
+        title: "Offer Created",
+        description: "New offer has been created successfully.",
+      });
+
+      setOfferForm({
+        title: '',
+        description: '',
+        discount_percentage: '',
+        discount_amount: '',
+        vehicle_model: '',
+        valid_from: '',
+        valid_until: '',
+        terms_conditions: ''
+      });
+      setShowOfferForm(false);
+      fetchOffers();
+    } catch (error) {
+      console.error('Error creating offer:', error);
+      toast({
+        title: "Error",
+        description: "Failed to create offer.",
+        variant: "destructive",
+      });
+    }
+  };
+
   useEffect(() => {
     fetchAdminData();
     fetchAppointments();
+    fetchOffers();
   }, []);
 
   const getInsights = () => {
@@ -177,6 +276,9 @@ const Admin = () => {
           <Button onClick={fetchAppointments} disabled={appointmentsLoading}>
             {appointmentsLoading ? 'Loading...' : 'Refresh Appointments'}
           </Button>
+          <Button onClick={fetchOffers} disabled={offersLoading}>
+            {offersLoading ? 'Loading...' : 'Refresh Offers'}
+          </Button>
         </div>
       </div>
 
@@ -230,6 +332,7 @@ const Admin = () => {
             <TabsTrigger value="feedback">Feedback Data</TabsTrigger>
             <TabsTrigger value="insights">Customer Insights</TabsTrigger>
             <TabsTrigger value="appointments">Appointments</TabsTrigger>
+            <TabsTrigger value="offers">Offers</TabsTrigger>
           </TabsList>
           
           <TabsContent value="feedback" className="space-y-6">
@@ -497,6 +600,191 @@ const Admin = () => {
                 ) : (
                   <div className="text-center py-8">
                     <p className="text-muted-foreground">No appointments found.</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="offers" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>Offers Management</CardTitle>
+                    <CardDescription>
+                      Create and manage special offers and discounts
+                    </CardDescription>
+                  </div>
+                  <Button onClick={() => setShowOfferForm(!showOfferForm)}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    {showOfferForm ? 'Cancel' : 'Add Offer'}
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {showOfferForm && (
+                  <Card className="mb-6">
+                    <CardHeader>
+                      <CardTitle className="text-lg">Create New Offer</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="title">Title *</Label>
+                          <Input
+                            id="title"
+                            value={offerForm.title}
+                            onChange={(e) => setOfferForm({ ...offerForm, title: e.target.value })}
+                            placeholder="Enter offer title"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="vehicle_model">Vehicle Model</Label>
+                          <Input
+                            id="vehicle_model"
+                            value={offerForm.vehicle_model}
+                            onChange={(e) => setOfferForm({ ...offerForm, vehicle_model: e.target.value })}
+                            placeholder="e.g., Nexon, Harrier"
+                          />
+                        </div>
+                        <div className="md:col-span-2">
+                          <Label htmlFor="description">Description *</Label>
+                          <Textarea
+                            id="description"
+                            value={offerForm.description}
+                            onChange={(e) => setOfferForm({ ...offerForm, description: e.target.value })}
+                            placeholder="Enter offer description"
+                            rows={3}
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="discount_percentage">Discount Percentage (%)</Label>
+                          <Input
+                            id="discount_percentage"
+                            type="number"
+                            value={offerForm.discount_percentage}
+                            onChange={(e) => setOfferForm({ ...offerForm, discount_percentage: e.target.value })}
+                            placeholder="e.g., 10"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="discount_amount">Discount Amount (₹)</Label>
+                          <Input
+                            id="discount_amount"
+                            type="number"
+                            value={offerForm.discount_amount}
+                            onChange={(e) => setOfferForm({ ...offerForm, discount_amount: e.target.value })}
+                            placeholder="e.g., 50000"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="valid_from">Valid From</Label>
+                          <Input
+                            id="valid_from"
+                            type="date"
+                            value={offerForm.valid_from}
+                            onChange={(e) => setOfferForm({ ...offerForm, valid_from: e.target.value })}
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="valid_until">Valid Until</Label>
+                          <Input
+                            id="valid_until"
+                            type="date"
+                            value={offerForm.valid_until}
+                            onChange={(e) => setOfferForm({ ...offerForm, valid_until: e.target.value })}
+                          />
+                        </div>
+                        <div className="md:col-span-2">
+                          <Label htmlFor="terms_conditions">Terms & Conditions</Label>
+                          <Textarea
+                            id="terms_conditions"
+                            value={offerForm.terms_conditions}
+                            onChange={(e) => setOfferForm({ ...offerForm, terms_conditions: e.target.value })}
+                            placeholder="Enter terms and conditions"
+                            rows={3}
+                          />
+                        </div>
+                      </div>
+                      <div className="mt-4 flex gap-2">
+                        <Button onClick={createOffer} disabled={!offerForm.title || !offerForm.description}>
+                          Create Offer
+                        </Button>
+                        <Button variant="outline" onClick={() => setShowOfferForm(false)}>
+                          Cancel
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {offersLoading ? (
+                  <div className="text-center py-8">
+                    <p className="text-muted-foreground">Loading offers...</p>
+                  </div>
+                ) : offers.length > 0 ? (
+                  <div className="rounded-md border">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Title</TableHead>
+                          <TableHead>Description</TableHead>
+                          <TableHead>Discount</TableHead>
+                          <TableHead>Vehicle Model</TableHead>
+                          <TableHead>Valid Period</TableHead>
+                          <TableHead>Created</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {offers.map((offer) => (
+                          <TableRow key={offer.id}>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                <Tag className="h-4 w-4 text-muted-foreground" />
+                                <span className="font-medium">{offer.title}</span>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <p className="text-sm text-muted-foreground line-clamp-2">
+                                {offer.description}
+                              </p>
+                            </TableCell>
+                            <TableCell>
+                              <div>
+                                {offer.discount_percentage && (
+                                  <Badge variant="secondary">{offer.discount_percentage}% off</Badge>
+                                )}
+                                {offer.discount_amount && (
+                                  <Badge variant="secondary">₹{offer.discount_amount} off</Badge>
+                                )}
+                                {!offer.discount_percentage && !offer.discount_amount && 'N/A'}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              {offer.vehicle_model || 'All Models'}
+                            </TableCell>
+                            <TableCell>
+                              <div className="text-sm">
+                                {offer.valid_from && offer.valid_until ? (
+                                  <>
+                                    <p>{new Date(offer.valid_from).toLocaleDateString()}</p>
+                                    <p className="text-muted-foreground">to {new Date(offer.valid_until).toLocaleDateString()}</p>
+                                  </>
+                                ) : 'No expiry'}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              {new Date(offer.created_at).toLocaleDateString()}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <p className="text-muted-foreground">No offers found. Create your first offer!</p>
                   </div>
                 )}
               </CardContent>
