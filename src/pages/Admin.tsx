@@ -144,7 +144,7 @@ const Admin = () => {
   const fetchOffers = async () => {
     setOffersLoading(true);
     try {
-      const response = await fetch('http://localhost:9090/offers');
+      const response = await fetch('http://localhost:9090/get_offers');
       if (!response.ok) throw new Error('Failed to fetch offers');
       
       const data = await response.json();
